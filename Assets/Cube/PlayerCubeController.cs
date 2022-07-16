@@ -5,9 +5,9 @@ using UnityEngine;
 public class PlayerCubeController : MonoBehaviour
 {
     Rigidbody rigidbody;
-    
-    Vector3 lastPos = new Vector3(0,0,;
-    Vector3 nextPos;
+
+    Vector3 lastPos = new Vector3(0, 0, 0);
+    Vector3 nextPos = new Vector3(0, 0, 0);
     float speed = 10.0f;
     float height = 3f;
 
