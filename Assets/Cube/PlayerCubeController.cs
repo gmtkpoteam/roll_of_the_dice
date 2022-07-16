@@ -9,6 +9,15 @@ enum Status
     STAY,
 }
 
+enum ActionDirection
+{
+    UP,
+    RIGHT,
+    DOWN,
+    LEFT,
+    NONE
+}
+
 public class PlayerCubeController : MonoBehaviour
 {
     [SerializeField] float startSpeed = 10f;
@@ -17,34 +26,40 @@ public class PlayerCubeController : MonoBehaviour
     [SerializeField] GameObject Cube;
 
     Vector3 lastPos = Vector3.zero;
-    Vector3 nextPos = Vector3.right * 5;
+    Vector3 nextPos = Vector3.zero;
     Transform cubeTransform;
     Quaternion lastRotatation;
     Quaternion newRotation;
 
     float speed;
-    Vector3 apogee = new Vector3(0, 0, 0);
-    float quadrA = 0;
+    Vector3 apogee;
+    float quadrA;
     float lastedTime = 0f;
     Status currentStatus = Status.START;
+    ActionDirection nextAction = ActionDirection.NONE;
 
     void Start()
     {
-        speed = startSpeed;
         cubeTransform = Cube.GetComponent<Transform>();
+
+        speed = startSpeed;
+        lastRotatation = cubeTransform.rotation;
+        Status currentStatus = Status.START;
+        ActionDirection nextAction = ActionDirection.RIGHT;
+
     }
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.UpArrow)) nextAction = ActionDirection.UP;
+        if (Input.GetKeyDown(KeyCode.RightArrow)) nextAction = ActionDirection.RIGHT;
+        if (Input.GetKeyDown(KeyCode.DownArrow)) nextAction = ActionDirection.DOWN;
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) nextAction = ActionDirection.LEFT;
 
         switch (currentStatus)
         {
             case Status.START:
-                lastPos = transform.position;
-                nextPos = Vector3.zero;
-                apogee = lastPos + (nextPos - lastPos) / 2 + new Vector3(0, height, 0);
-                quadrA = (lastPos.y - apogee.y) / ((lastPos.x - apogee.x) * (lastPos.x - apogee.x));
-                lastRotatation = cubeTransform.rotation;
+                countQuadrAttr();
                 newRotation = Quaternion.AngleAxis(180f, Vector3.forward); // значени€ вли€ют на направление поворота
                 currentStatus = Status.FLY;
                 break;
@@ -68,10 +83,28 @@ public class PlayerCubeController : MonoBehaviour
                 {
                     lastPos = nextPos;
                     nextPos = nextPos + Vector3.right * 5;
-                    apogee = lastPos + (nextPos - lastPos) / 2 + new Vector3(0, height, 0);
-                    quadrA = (lastPos.y - apogee.y) / ((lastPos.x - apogee.x) * (lastPos.x - apogee.x));
 
-                    newRotation = Quaternion.AngleAxis(180f, Vector3.forward); // значени€ вли€ют на направление поворота
+                    countQuadrAttr();
+
+                    switch (nextAction)
+                    {
+                        case (ActionDirection.UP):
+                            newRotation = Quaternion.AngleAxis(-90f, Vector3.left);
+                            break;
+                        case (ActionDirection.RIGHT):
+                            newRotation = Quaternion.AngleAxis(-90f, Vector3.forward);
+                            break;
+                        case (ActionDirection.DOWN):
+                            newRotation = Quaternion.AngleAxis(-90f, Vector3.right);
+                            break;
+                        case (ActionDirection.LEFT):
+                            newRotation = Quaternion.AngleAxis(-90f, Vector3.back);
+                            break;
+                        default:
+                            newRotation = Quaternion.AngleAxis(0, Vector3.forward);
+                            break;
+                    }
+                    nextAction = ActionDirection.NONE;
 
                     lastedTime = 0f;
                     currentStatus = Status.FLY;
@@ -81,7 +114,13 @@ public class PlayerCubeController : MonoBehaviour
         
     }
 
-    Vector3 getPosInQuadr(float x)
+    void countQuadrAttr()
+    {
+        apogee = lastPos + (nextPos - lastPos) / 2 + new Vector3(0, height, 0);
+        quadrA = (lastPos.y - apogee.y) / ((lastPos.x - apogee.x) * (lastPos.x - apogee.x));
+    }
+
+    Vector3 getPosInQuadr(float x) // ¬осстанавливаем квадратичную функцию по нужным точкам
     {
         float y = quadrA * (x - apogee.x) * (x - apogee.x) + apogee.y;
         return new Vector3(x, y, 0);
