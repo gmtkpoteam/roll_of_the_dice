@@ -11,11 +11,13 @@ enum Status
 
 enum ActionDirection
 {
-    UP,
-    RIGHT,
-    DOWN,
-    LEFT,
-    NONE
+    NONE,
+    ONE,
+    TWO,
+    THREE,
+    FOUR,
+    FIVE,
+    SIX
 }
 
 public class PlayerCubeController : MonoBehaviour
@@ -28,7 +30,7 @@ public class PlayerCubeController : MonoBehaviour
     Vector3 lastPos = Vector3.zero;
     Vector3 nextPos = Vector3.zero;
     Transform cubeTransform;
-    Quaternion lastRotatation;
+    Quaternion lastRotation;
     Quaternion newRotation;
 
     float speed;
@@ -48,18 +50,20 @@ public class PlayerCubeController : MonoBehaviour
         cubeTransform = Cube.GetComponent<Transform>();
 
         speed = startSpeed;
-        lastRotatation = cubeTransform.rotation;
+        lastRotation = cubeTransform.rotation;
         Status currentStatus = Status.START;
-        ActionDirection nextAction = ActionDirection.RIGHT;
+        ActionDirection nextAction = ActionDirection.NONE;
 
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow)) nextAction = ActionDirection.UP;
-        if (Input.GetKeyDown(KeyCode.RightArrow)) nextAction = ActionDirection.RIGHT;
-        if (Input.GetKeyDown(KeyCode.DownArrow)) nextAction = ActionDirection.DOWN;
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) nextAction = ActionDirection.LEFT;
+        if (Input.GetKeyDown(KeyCode.Alpha1)) nextAction = ActionDirection.ONE;
+        if (Input.GetKeyDown(KeyCode.Alpha2)) nextAction = ActionDirection.TWO;
+        if (Input.GetKeyDown(KeyCode.Alpha3)) nextAction = ActionDirection.THREE;
+        if (Input.GetKeyDown(KeyCode.Alpha4)) nextAction = ActionDirection.FOUR;
+        if (Input.GetKeyDown(KeyCode.Alpha5)) nextAction = ActionDirection.FIVE;
+        if (Input.GetKeyDown(KeyCode.Alpha6)) nextAction = ActionDirection.SIX;
 
         switch (currentStatus)
         {
@@ -72,7 +76,7 @@ public class PlayerCubeController : MonoBehaviour
                 lastedTime += Time.deltaTime;
                 
                 transform.position = getPosInQuadr(Mathf.Lerp(lastPos.x, nextPos.x, lastedTime * speed / 10));
-                cubeTransform.rotation = Quaternion.Lerp(lastRotatation, newRotation, lastedTime * speed / 10);
+                cubeTransform.rotation = Quaternion.Lerp(lastRotation, newRotation, lastedTime * speed / 10);
 
                 if (Vector3.Distance(transform.position, nextPos) < 0.01f)
                 {
@@ -84,7 +88,7 @@ public class PlayerCubeController : MonoBehaviour
                 break;
             case Status.STAY:
                 if (isLandedNow) {
-                    onLand.Invoke();
+                    //onLand.Invoke();
                     isLandedNow = false;
                 }
 
@@ -96,23 +100,30 @@ public class PlayerCubeController : MonoBehaviour
                     nextPos = nextPos + Vector3.right * 5;
 
                     countQuadrAttr();
+                    lastRotation = cubeTransform.rotation;
 
                     switch (nextAction)
                     {
-                        case (ActionDirection.UP):
-                            newRotation = Quaternion.AngleAxis(90f, Vector3.left);
+                        case (ActionDirection.ONE):
+                            newRotation = Quaternion.Euler(0, 0, 0);
                             break;
-                        case (ActionDirection.RIGHT):
-                            newRotation = Quaternion.AngleAxis(180f, Vector3.forward);
+                        case (ActionDirection.TWO):
+                            newRotation = Quaternion.Euler(90, 0, 0);
                             break;
-                        case (ActionDirection.DOWN):
-                            newRotation = Quaternion.AngleAxis(90f, Vector3.right);
+                        case (ActionDirection.THREE):
+                            newRotation = Quaternion.Euler(90, -90, 0);
                             break;
-                        case (ActionDirection.LEFT):
-                            newRotation = Quaternion.AngleAxis(-90f, Vector3.back);
+                        case (ActionDirection.FOUR):
+                            newRotation = Quaternion.Euler(90, 90, 0);
+                            break;
+                        case (ActionDirection.FIVE):
+                            newRotation = Quaternion.Euler(90, 180, 0);
+                            break;
+                        case (ActionDirection.SIX):
+                            newRotation = Quaternion.Euler(0, 180, 180);
                             break;
                         default:
-                            newRotation = Quaternion.AngleAxis(-90f, Vector3.forward);
+                            newRotation = Quaternion.Euler(0, 0, -90f) * lastRotation;
                             break;
                     }
                     nextAction = ActionDirection.NONE;
