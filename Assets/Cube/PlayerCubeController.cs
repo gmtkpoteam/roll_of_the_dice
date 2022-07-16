@@ -6,7 +6,7 @@ enum Status
 {
     START,
     FLY,
-    STAY,
+    STAY
 }
 
 enum ActionDirection
@@ -37,6 +37,11 @@ public class PlayerCubeController : MonoBehaviour
     float lastedTime = 0f;
     Status currentStatus = Status.START;
     ActionDirection nextAction = ActionDirection.NONE;
+
+    private bool isLandedNow = false;
+    public delegate void OnLand();
+    public event OnLand onLand;
+
 
     void Start()
     {
@@ -74,9 +79,15 @@ public class PlayerCubeController : MonoBehaviour
                     lastedTime = 0f;
                     transform.position = nextPos;
                     currentStatus = Status.STAY;
+                    isLandedNow = true;
                 }
                 break;
             case Status.STAY:
+                if (isLandedNow) {
+                    onLand.Invoke();
+                    isLandedNow = false;
+                }
+
                 lastedTime += Time.deltaTime;
 
                 if(lastedTime > stayTime)
