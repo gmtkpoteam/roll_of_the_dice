@@ -5,20 +5,25 @@ using UnityEngine;
 public class PlayerCubeController : MonoBehaviour
 {
     Rigidbody rigidbody;
+    
+    Vector3 lastPos = new Vector3(0,0,;
+    Vector3 nextPos;
+    float speed = 10.0f;
+    float height = 3f;
 
-    // Start is called before the first frame update
+
     void Start()
     {
         rigidbody = GetComponentInChildren(typeof(Rigidbody)) as Rigidbody;
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
-        if (Input.GetKeyDown("space"))
-        {
-            rigidbody.AddForce(Vector3.up * 300);
-            rigidbody.AddTorque(Vector3.back * 10);
-        }
+
+        // if (Input.GetKeyDown("space"))
+        // {
+        //     rigidbody.AddForce(Vector3.up * 300);
+        //     rigidbody.AddTorque(Vector3.back * 10);
+        // }
     }
 }
