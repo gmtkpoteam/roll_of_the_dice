@@ -6,19 +6,20 @@ public class FollowObject : MonoBehaviour
 {
     [SerializeField] GameObject objectToFollow;
 
-    Transform selfTransform;
     Transform followTransform;
     float distanceX;
 
     void Start()
     {
-        selfTransform = GetComponent<Transform>();
         followTransform = objectToFollow.GetComponent<Transform>();
-        distanceX = followTransform.position.x - selfTransform.position.x;
+        distanceX = followTransform.position.x - transform.position.x;
     }
 
     void Update()
     {
-        selfTransform.position = new Vector3(followTransform.position.x + distanceX, selfTransform.position.y, selfTransform.position.z);
+        transform.position = new Vector3(
+            Mathf.Lerp(transform.position.x, followTransform.position.x - distanceX, Time.deltaTime * 2),
+            transform.position.y,
+            transform.position.z);
     }
 }

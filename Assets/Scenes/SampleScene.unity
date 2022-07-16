@@ -720,6 +720,10 @@ PrefabInstance:
       value: PlayerCube
       objectReference: {fileID: 0}
     - target: {fileID: 5137698653607589913, guid: 6f5664acfc374794c8d2558fbaac842d, type: 3}
+      propertyPath: Cube
+      value: 
+      objectReference: {fileID: 2113081971}
+    - target: {fileID: 5137698653607589913, guid: 6f5664acfc374794c8d2558fbaac842d, type: 3}
       propertyPath: speed
       value: 10
       objectReference: {fileID: 0}
@@ -733,11 +737,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8932404646722727087, guid: 6f5664acfc374794c8d2558fbaac842d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 8932404646722727087, guid: 6f5664acfc374794c8d2558fbaac842d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8932404646722727087, guid: 6f5664acfc374794c8d2558fbaac842d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1064,3 +1068,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2113081971 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3868605344236411931, guid: 6f5664acfc374794c8d2558fbaac842d, type: 3}
+  m_PrefabInstance: {fileID: 1294320877}
+  m_PrefabAsset: {fileID: 0}
