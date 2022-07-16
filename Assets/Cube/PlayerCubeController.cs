@@ -89,19 +89,19 @@ public class PlayerCubeController : MonoBehaviour
                     switch (nextAction)
                     {
                         case (ActionDirection.UP):
-                            newRotation = Quaternion.AngleAxis(-90f, Vector3.left);
+                            newRotation = Quaternion.AngleAxis(90f, Vector3.left);
                             break;
                         case (ActionDirection.RIGHT):
-                            newRotation = Quaternion.AngleAxis(-90f, Vector3.forward);
+                            newRotation = Quaternion.AngleAxis(180f, Vector3.forward);
                             break;
                         case (ActionDirection.DOWN):
-                            newRotation = Quaternion.AngleAxis(-90f, Vector3.right);
+                            newRotation = Quaternion.AngleAxis(90f, Vector3.right);
                             break;
                         case (ActionDirection.LEFT):
                             newRotation = Quaternion.AngleAxis(-90f, Vector3.back);
                             break;
                         default:
-                            newRotation = Quaternion.AngleAxis(0, Vector3.forward);
+                            newRotation = Quaternion.AngleAxis(-90f, Vector3.forward);
                             break;
                     }
                     nextAction = ActionDirection.NONE;
