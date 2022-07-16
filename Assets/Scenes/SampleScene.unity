@@ -870,7 +870,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerCube: {fileID: 1286747398}
-  Platform: {fileID: 5836040805325112347, guid: 8e4b79b1439da1f4880af26532f2708c, type: 3}
+  platformObject: {fileID: 5836040805325112347, guid: 8e4b79b1439da1f4880af26532f2708c, type: 3}
   ScoreTextGameObject: {fileID: 1436438082}
 --- !u!4 &1726955704
 Transform:

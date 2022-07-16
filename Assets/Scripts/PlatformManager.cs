@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlatformManager : MonoBehaviour
+public class PlatformManager
 {
     // Custom-параметрами ты можешь четко указать, какую платформу ставить. Иначе - будет честный рандом.
-    public BasePlatform GetNextPlatform(PlatformType customPlatformType = default, DiceEdgeType customEdgeType = default) {
+    public BasePlatform GetNextPlatform(GameObject platformObject, PlatformType customPlatformType = default, DiceEdgeType customEdgeType = default) {
         var platformType = customPlatformType != default 
             ? customPlatformType 
             : (PlatformType)Random.Range(0, System.Enum.GetNames(typeof(PlatformType)).Length - 1);
@@ -14,22 +14,23 @@ public class PlatformManager : MonoBehaviour
             : (DiceEdgeType)Random.Range(1, System.Enum.GetNames(typeof(DiceEdgeType)).Length - 1);
 
         switch (platformType) {
-            case PlatformType.Block:            return new PlatformBlock();
-            case PlatformType.TurnLimit:        return new PlatformTurnLimit(edgeType);
-            case PlatformType.BreaksEdgeOnSkip: return new PlatformBreaksEdgeOnSkip();
-            case PlatformType.BreaksEdgeOnHit:  return new PlatformBreaksEdgeOnHit(edgeType);
-            case PlatformType.LoseControl:      return new PlatformLoseControl(edgeType);
-            case PlatformType.JumpOnHit:        return new PlatformJumpOnHit(edgeType);
-            case PlatformType.RestoreEdge:      return new PlatformRestoreEdge();
-            case PlatformType.ScoreOnHit:       return new PlatformScoreOnHit(edgeType);
-            case PlatformType.ScoreOnSkip:      return new PlatformScoreOnSkip();
-            case PlatformType.Shield:           return new PlatformShield(edgeType);
-            case PlatformType.Invulnerability:  return new PlatformInvulnerability(edgeType);
+            case PlatformType.Block:            return new PlatformBlock(platformObject);
+            case PlatformType.TurnLimit:        return new PlatformTurnLimit(platformObject, edgeType);
+            case PlatformType.BreaksEdgeOnSkip: return new PlatformBreaksEdgeOnSkip(platformObject);
+            case PlatformType.BreaksEdgeOnHit:  return new PlatformBreaksEdgeOnHit(platformObject, edgeType);
+            case PlatformType.LoseControl:      return new PlatformLoseControl(platformObject, edgeType);
+            case PlatformType.JumpOnHit:        return new PlatformJumpOnHit(platformObject, edgeType);
+            case PlatformType.RestoreEdge:      return new PlatformRestoreEdge(platformObject);
+            case PlatformType.ScoreOnHit:       return new PlatformScoreOnHit(platformObject, edgeType);
+            case PlatformType.ScoreOnSkip:      return new PlatformScoreOnSkip(platformObject);
+            case PlatformType.Shield:           return new PlatformShield(platformObject, edgeType);
+            case PlatformType.Invulnerability:  return new PlatformInvulnerability(platformObject, edgeType);
             default: return default;
         }
     }
 
     public BasePlatform GetNextPlatformWithoutDisabledEdges(
+        GameObject platformObject,
         Dictionary<DiceEdgeType, DiceEdge> edges, 
         PlatformType customPlatformType = default, 
         bool withoutBroken = true, 
@@ -48,6 +49,6 @@ public class PlatformManager : MonoBehaviour
             ? default
             : filteredEdgeTypes[Random.Range(0, filteredEdgeTypes.Count)];
 
-        return GetNextPlatform(customPlatformType, edgeType);
+        return GetNextPlatform(platformObject, customPlatformType, edgeType);
     }
 }

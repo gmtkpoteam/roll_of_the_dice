@@ -1,10 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlatformController : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [SerializeField]
+    private TextMeshPro text;
+
+    public void SetText(string newText, Color color) {
+        text.SetText(newText);
+        text.color = color;
+    }
+
     void Start()
     {
         

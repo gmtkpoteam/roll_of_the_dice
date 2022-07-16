@@ -88,7 +88,7 @@ public class PlayerCubeController : MonoBehaviour
                 break;
             case Status.STAY:
                 if (isLandedNow) {
-                    //onLand.Invoke();
+                    onLand.Invoke();
                     isLandedNow = false;
                 }
 

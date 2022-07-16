@@ -25,18 +25,26 @@ public enum PlatformTrigger {
 }
 
 public class BasePlatform {
+    private GameObject PlatformObject;
     private PlatformType Type;
     private bool Positive;
     private DiceEdgeType EdgeType;
     private PlatformTrigger Trigger;
+    private PlatformController Controller;
 
-    public BasePlatform(PlatformType type, bool positive, PlatformTrigger trigger, DiceEdgeType edgeType = DiceEdgeType.Empty) {
+    public BasePlatform(GameObject platformObject, PlatformType type, string text, bool positive, PlatformTrigger trigger, DiceEdgeType edgeType = DiceEdgeType.Empty) {
+        PlatformObject = platformObject;
         Type = type;
         EdgeType = edgeType;
         Positive = positive;
         Trigger = trigger;
+
+        Controller = PlatformObject.GetComponent<PlatformController>();
+
+        Controller.SetText(text, positive ? Color.green : Color.red);
     }
 
+    public GameObject GetObject() { return PlatformObject; }
     public bool IsPositive() { return Positive; }
     public PlatformType GetPlatformType() { return Type; }
     public DiceEdgeType GetDiceEdgeType() { return EdgeType; }
@@ -45,50 +53,50 @@ public class BasePlatform {
 }
 
 public class PlatformBlock : BasePlatform {
-    public PlatformBlock() : base(PlatformType.Block, false, PlatformTrigger.OnHit) { }
+    public PlatformBlock(GameObject platformObject) : base(platformObject, PlatformType.Block, "BL", false, PlatformTrigger.OnHit) { }
     public int Steps { get { return 3; } }
 }
 
 public class PlatformInvulnerability : BasePlatform {
-    public PlatformInvulnerability(DiceEdgeType edgeType) : base(PlatformType.Invulnerability, true, PlatformTrigger.OnHitWithEdge, edgeType) { }
+    public PlatformInvulnerability(GameObject platformObject, DiceEdgeType edgeType) : base(platformObject, PlatformType.Invulnerability, "IN", true, PlatformTrigger.OnHitWithEdge, edgeType) { }
     public int Steps { get { return 3; } }
 }
 
 public class PlatformScoreOnHit : BasePlatform {
-    public PlatformScoreOnHit(DiceEdgeType edgeType) : base(PlatformType.ScoreOnHit, true, PlatformTrigger.OnHitWithEdge, edgeType) { }
-    public int Score { get { return 5; } }
+    public PlatformScoreOnHit(GameObject platformObject, DiceEdgeType edgeType) : base(platformObject, PlatformType.ScoreOnHit, "SH", true, PlatformTrigger.OnHitWithEdge, edgeType) { }
+    public int Score { get { return 111; } }
 }
 
 public class PlatformScoreOnSkip : BasePlatform {
-    public PlatformScoreOnSkip() : base(PlatformType.ScoreOnSkip, true, PlatformTrigger.OnSkip) { }
-    public int Score { get { return 5; } }
+    public PlatformScoreOnSkip(GameObject platformObject) : base(platformObject, PlatformType.ScoreOnSkip, "SS", true, PlatformTrigger.OnSkip) { }
+    public int Score { get { return 1111; } }
 }
 
 public class PlatformBreaksEdgeOnHit : BasePlatform {
-    public PlatformBreaksEdgeOnHit(DiceEdgeType edgeType) : base(PlatformType.BreaksEdgeOnHit, false, PlatformTrigger.OnHitWithEdgeAlt, edgeType) { }
+    public PlatformBreaksEdgeOnHit(GameObject platformObject, DiceEdgeType edgeType) : base(platformObject, PlatformType.BreaksEdgeOnHit, "BH", false, PlatformTrigger.OnHitWithEdgeAlt, edgeType) { }
 }
 
 public class PlatformBreaksEdgeOnSkip : BasePlatform {
-    public PlatformBreaksEdgeOnSkip() : base(PlatformType.BreaksEdgeOnSkip, false, PlatformTrigger.OnSkip) { }
+    public PlatformBreaksEdgeOnSkip(GameObject platformObject) : base(platformObject, PlatformType.BreaksEdgeOnSkip, "BS", false, PlatformTrigger.OnSkip) { }
 }
 
 public class PlatformJumpOnHit : BasePlatform {
-    public PlatformJumpOnHit(DiceEdgeType edgeType) : base(PlatformType.JumpOnHit, true, PlatformTrigger.OnHitWithEdge, edgeType) { }
+    public PlatformJumpOnHit(GameObject platformObject, DiceEdgeType edgeType) : base(platformObject, PlatformType.JumpOnHit, "JP", true, PlatformTrigger.OnHitWithEdge, edgeType) { }
 }
 
 public class PlatformLoseControl : BasePlatform {
-    public PlatformLoseControl(DiceEdgeType edgeType) : base(PlatformType.LoseControl, false, PlatformTrigger.OnHitWithEdgeAlt, edgeType) { }
+    public PlatformLoseControl(GameObject platformObject, DiceEdgeType edgeType) : base(platformObject, PlatformType.LoseControl, "LC", false, PlatformTrigger.OnHitWithEdgeAlt, edgeType) { }
 }
 
 public class PlatformRestoreEdge : BasePlatform {
-    public PlatformRestoreEdge() : base(PlatformType.RestoreEdge, false, PlatformTrigger.OnHit) { }
+    public PlatformRestoreEdge(GameObject platformObject) : base(platformObject, PlatformType.RestoreEdge, "RE", true, PlatformTrigger.OnHit) { }
 }
 
 public class PlatformShield : BasePlatform {
-    public PlatformShield(DiceEdgeType edgeType) : base(PlatformType.Shield, true, PlatformTrigger.OnHitWithEdge, edgeType) { }
+    public PlatformShield(GameObject platformObject, DiceEdgeType edgeType) : base(platformObject, PlatformType.Shield, "SD", true, PlatformTrigger.OnHitWithEdge, edgeType) { }
 }
 
 public class PlatformTurnLimit : BasePlatform {
-    public PlatformTurnLimit(DiceEdgeType edgeType) : base(PlatformType.TurnLimit, false, PlatformTrigger.OnHitWithEdgeAlt, edgeType) { }
+    public PlatformTurnLimit(GameObject platformObject, DiceEdgeType edgeType) : base(platformObject, PlatformType.TurnLimit, "TL", false, PlatformTrigger.OnHitWithEdgeAlt, edgeType) { }
 }
 
