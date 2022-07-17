@@ -41,8 +41,10 @@ public class PlayerCubeController : MonoBehaviour
     bool nextJumpLong = false;
     float quadrA;
     float lastedTime = 0f;
+    float lastedRotationTime = 0f;
     Status currentStatus = Status.START;
     ActionDirection nextAction = ActionDirection.NONE;
+    bool middleAirChangedAction = false;
 
     private bool isLandedNow = false;
     public delegate void OnLand(Quaternion newRotation);
@@ -105,16 +107,63 @@ public class PlayerCubeController : MonoBehaviour
                 break;
             case Status.FLY:
                 lastedTime += Time.deltaTime;
+                lastedRotationTime += Time.deltaTime;
 
+                if (
+                    !middleAirChangedAction &&
+                    canAction &&
+                    (transform.position.x > lastPos.x + 2.5f)
+                ){
+                    switch (nextAction)
+                    {
+                        case (ActionDirection.ONE):
+                            lastRotation = cubeTransform.rotation;
+                            lastedRotationTime = 0;
+                            newRotation = Quaternion.Euler(90, 0, 0);
+                            break;
+                        case (ActionDirection.TWO):
+                            lastRotation = cubeTransform.rotation;
+                            lastedRotationTime = 0;
+                            newRotation = Quaternion.Euler(180, 0, 0);
+                            break;
+                        case (ActionDirection.THREE):
+                            lastRotation = cubeTransform.rotation;
+                            lastedRotationTime = 0;
+                            newRotation = Quaternion.Euler(180, 0, 90);
+                            break;
+                        case (ActionDirection.FOUR):
+                            lastRotation = cubeTransform.rotation;
+                            lastedRotationTime = 0;
+                            newRotation = Quaternion.Euler(180, 0, -90);
+                            break;
+                        case (ActionDirection.FIVE):
+                            lastRotation = cubeTransform.rotation;
+                            lastedRotationTime = 0;
+                            newRotation = Quaternion.Euler(0, 180, 0);
+                            break;
+                        case (ActionDirection.SIX):
+                            lastRotation = cubeTransform.rotation;
+                            lastedRotationTime = 0;
+                            newRotation = Quaternion.Euler(-90, 0, 0);
+                            break;
+                        default:
+                            //newRotation = Quaternion.Euler(0, 0, -90f) * lastRotation;
+                            break;
+                    }
+                    nextAction = ActionDirection.NONE;
+
+                    middleAirChangedAction = true;
+                }
 
                 
                 transform.position = getPosInQuadr(Mathf.Lerp(lastPos.x, nextPos.x, lastedTime * speed / 10));
-                cubeTransform.rotation = Quaternion.Lerp(lastRotation, newRotation, lastedTime * speed / 10);
+                cubeTransform.rotation = Quaternion.Lerp(lastRotation, newRotation, lastedRotationTime * speed / 5);
 
                 if (Vector3.Distance(transform.position, nextPos) < 0.01f)
                 {
                     lastedTime = 0f;
                     transform.position = nextPos;
+                    cubeTransform.rotation = newRotation;
                     currentStatus = Status.STAY;
                     StatusController.resetActiveFace();
                     isLandedNow = true;
@@ -181,7 +230,9 @@ public class PlayerCubeController : MonoBehaviour
                     }
                     nextAction = ActionDirection.NONE;
 
+                    middleAirChangedAction = false;
                     lastedTime = 0f;
+                    lastedRotationTime = 0;
                     currentStatus = Status.FLY;
                 }
                 break;
