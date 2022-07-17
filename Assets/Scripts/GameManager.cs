@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour
 
     private UIStatuses uiStatuses;
 
+    private AudioSource backroundMusic;
+
     void Start()
     {
         uiStatuses = gameObject.GetComponent<UIStatuses>();
@@ -39,6 +41,9 @@ public class GameManager : MonoBehaviour
 
         StatusText = StatusTextGameObject.GetComponent<TextMeshProUGUI>();
 
+        backroundMusic = GetComponent<AudioSource>();
+        StartCoroutine(PlayBackgroundMusic()); // перенести в старт игры.
+
         // Создаем начальные платформы
         for (var i = 0; i < 9; i++) {
             var newPlatform = AddNextPlatform();
@@ -46,6 +51,12 @@ public class GameManager : MonoBehaviour
                 newPlatform.GetObject().SetActive(false);
             }
         }
+    }
+
+    IEnumerator PlayBackgroundMusic()
+    {
+        yield return new WaitForSeconds(0.95f);
+        backroundMusic.Play();
     }
 
     private void OnLandHandler(Quaternion newRotation) {
