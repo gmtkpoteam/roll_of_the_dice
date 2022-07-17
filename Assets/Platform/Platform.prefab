@@ -286,8 +286,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 143344095924333062}
   description: {fileID: 154515409628074411}
-  redMaterial: {fileID: 0}
-  greenMaterial: {fileID: 0}
+  redMaterial: {fileID: 2100000, guid: 5541b7f109461ac40a870b3870e82041, type: 2}
+  greenMaterial: {fileID: 2100000, guid: e011ca018e1a32848b75def0de36672d, type: 2}
 --- !u!1 &6291258026086221459
 GameObject:
   m_ObjectHideFlags: 0
