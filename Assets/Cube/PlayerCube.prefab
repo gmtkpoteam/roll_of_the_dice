@@ -393,6 +393,7 @@ MonoBehaviour:
   height: 3
   stayTime: 0.2
   Cube: {fileID: 0}
+  CubeFacesStatuses: []
 --- !u!1 &3868605344236411931
 GameObject:
   m_ObjectHideFlags: 0

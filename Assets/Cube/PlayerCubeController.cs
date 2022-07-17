@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 enum Status
 {
@@ -9,7 +10,7 @@ enum Status
     STAY
 }
 
-enum ActionDirection
+public enum ActionDirection
 {
     NONE,
     ONE,
@@ -26,6 +27,13 @@ public class PlayerCubeController : MonoBehaviour
     [SerializeField] float height = 3f;
     [SerializeField] float stayTime = 0.2f;
     [SerializeField] GameObject Cube;
+
+    // UI Group
+    [SerializeField] private GameObject[] CubeFacesStatuses;
+    private List<Image> CubeFacesStatusesBacks;
+    private Color colorActive = Color.green;
+    private Color colorInactive = Color.black;
+    private Color colorDisabled = Color.red;
 
     Vector3 lastPos = Vector3.zero;
     Vector3 nextPos = Vector3.zero;
@@ -52,6 +60,12 @@ public class PlayerCubeController : MonoBehaviour
 
         speed = startSpeed;
         lastRotation = cubeTransform.rotation;
+
+/*        for (var i = 0; i < CubeFacesStatuses.Length; i++)
+        {
+            CubeFacesStatusesBacks.Add(CubeFacesStatuses[i].GetComponent<Image>());
+        }*/
+        
     }
 
     void Update()
@@ -112,22 +126,22 @@ public class PlayerCubeController : MonoBehaviour
                     switch (nextAction)
                     {
                         case (ActionDirection.ONE):
-                            newRotation = Quaternion.Euler(0, 0, 0);
-                            break;
-                        case (ActionDirection.TWO):
                             newRotation = Quaternion.Euler(90, 0, 0);
                             break;
+                        case (ActionDirection.TWO):
+                            newRotation = Quaternion.Euler(180, 0, 0);
+                            break;
                         case (ActionDirection.THREE):
-                            newRotation = Quaternion.Euler(90, -90, 0);
+                            newRotation = Quaternion.Euler(180, 0, 90);
                             break;
                         case (ActionDirection.FOUR):
-                            newRotation = Quaternion.Euler(90, 90, 0);
+                            newRotation = Quaternion.Euler(180, 0, -90);
                             break;
                         case (ActionDirection.FIVE):
-                            newRotation = Quaternion.Euler(90, 180, 0);
+                            newRotation = Quaternion.Euler(0, 180, 0);
                             break;
                         case (ActionDirection.SIX):
-                            newRotation = Quaternion.Euler(0, 180, 180);
+                            newRotation = Quaternion.Euler(-90, 0, 0);
                             break;
                         default:
                             newRotation = Quaternion.Euler(0, 0, -90f) * lastRotation;
@@ -158,5 +172,10 @@ public class PlayerCubeController : MonoBehaviour
     public void setNextJumpLong()
     {
         nextJumpLong = true;
+    }
+
+    public void setNextAction(ActionDirection direction)
+    {
+        nextAction = direction;
     }
 }
