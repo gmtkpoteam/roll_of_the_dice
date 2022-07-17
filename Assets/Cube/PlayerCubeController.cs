@@ -35,6 +35,7 @@ public class PlayerCubeController : MonoBehaviour
 
     float speed;
     Vector3 apogee;
+    bool nextJumpLong = false;
     float quadrA;
     float lastedTime = 0f;
     Status currentStatus = Status.START;
@@ -51,24 +52,21 @@ public class PlayerCubeController : MonoBehaviour
 
         speed = startSpeed;
         lastRotation = cubeTransform.rotation;
-        Status currentStatus = Status.START;
-        ActionDirection nextAction = ActionDirection.NONE;
-
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1)) nextAction = ActionDirection.ONE;
-        if (Input.GetKeyDown(KeyCode.Alpha2)) nextAction = ActionDirection.TWO;
-        if (Input.GetKeyDown(KeyCode.Alpha3)) nextAction = ActionDirection.THREE;
-        if (Input.GetKeyDown(KeyCode.Alpha4)) nextAction = ActionDirection.FOUR;
-        if (Input.GetKeyDown(KeyCode.Alpha5)) nextAction = ActionDirection.FIVE;
-        if (Input.GetKeyDown(KeyCode.Alpha6)) nextAction = ActionDirection.SIX;
+        if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) nextAction = ActionDirection.ONE;
+        if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) nextAction = ActionDirection.TWO;
+        if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3)) nextAction = ActionDirection.THREE;
+        if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4)) nextAction = ActionDirection.FOUR;
+        if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Keypad5)) nextAction = ActionDirection.FIVE;
+        if (Input.GetKeyDown(KeyCode.Alpha6) || Input.GetKeyDown(KeyCode.Keypad6)) nextAction = ActionDirection.SIX;
 
         switch (currentStatus)
         {
             case Status.START:
-                countQuadrAttr();
+                countQuadrAttr(height);
                 newRotation = Quaternion.AngleAxis(180f, Vector3.forward); // значения влияют на направление поворота
                 currentStatus = Status.FLY;
                 break;
@@ -97,9 +95,18 @@ public class PlayerCubeController : MonoBehaviour
                 if(lastedTime > stayTime)
                 {
                     lastPos = nextPos;
-                    nextPos = nextPos + Vector3.right * 5;
+                    if (nextJumpLong)
+                    {
+                        nextPos = nextPos + Vector3.right * 10;
+                        countQuadrAttr(height * 1.5f);
+                        nextJumpLong = false;
+                    }
+                    else
+                    {
+                        nextPos = nextPos + Vector3.right * 5;
+                        countQuadrAttr(height);
+                    }
 
-                    countQuadrAttr();
                     lastRotation = cubeTransform.rotation;
 
                     switch (nextAction)
@@ -136,7 +143,7 @@ public class PlayerCubeController : MonoBehaviour
         
     }
 
-    void countQuadrAttr()
+    void countQuadrAttr(float height)
     {
         apogee = lastPos + (nextPos - lastPos) / 2 + new Vector3(0, height, 0);
         quadrA = (lastPos.y - apogee.y) / ((lastPos.x - apogee.x) * (lastPos.x - apogee.x));
@@ -146,5 +153,10 @@ public class PlayerCubeController : MonoBehaviour
     {
         float y = quadrA * (x - apogee.x) * (x - apogee.x) + apogee.y;
         return new Vector3(x, y, 0);
+    }
+
+    public void setNextJumpLong()
+    {
+        nextJumpLong = true;
     }
 }
