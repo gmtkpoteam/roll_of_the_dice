@@ -107,4 +107,14 @@ public class UIStatuses : MonoBehaviour
             }
         }
     }
+
+    public void resetAllStatuses()
+    {
+        for (var i = 0; i < 6; i++)
+        {
+            FaceStruct face = faces[i];
+            face.img.color = colorInactive;
+            face.curStatus = FaceStatus.INACTIVE;
+        }
+    }
 }

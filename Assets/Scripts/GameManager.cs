@@ -16,10 +16,16 @@ public class GameManager : MonoBehaviour
     private BasePlatform skippedPlatform = null;
     private bool isSetSkippedPlatform = false;
 
+    [SerializeField] private GameObject MainMenuCanvas;
+    [SerializeField] private GameObject GamePlayCanvas;
+
     [SerializeField]
     private GameObject ScoreTextGameObject;
     private TextMeshProUGUI ScoreText;
+    [SerializeField] private GameObject BestScoreTextGameObject;
+    private TextMeshProUGUI BestScoreText;
     private int Score = 0;
+    private int BestScore = 0;
 
     [SerializeField]
     private GameObject StatusTextGameObject;
@@ -38,11 +44,11 @@ public class GameManager : MonoBehaviour
         PlayerCube.onLand += OnLandHandler;
         ScoreText = ScoreTextGameObject.GetComponent<TextMeshProUGUI>();
         ScoreText.SetText(Score.ToString());
+        BestScoreText = BestScoreTextGameObject.GetComponent<TextMeshProUGUI>();
 
         StatusText = StatusTextGameObject.GetComponent<TextMeshProUGUI>();
 
         backroundMusic = GetComponent<AudioSource>();
-        StartCoroutine(PlayBackgroundMusic()); // перенести в старт игры.
 
         // Создаем начальные платформы
         for (var i = 0; i < 9; i++) {
@@ -53,10 +59,61 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void StartPlay()
+    {
+        MainMenuCanvas.SetActive(false);
+        GamePlayCanvas.SetActive(true);
+        PlayerCube.StartPlay();
+
+        StartCoroutine(PlayBackgroundMusic()); // перенести в старт игры.
+    }
+
+    void EndPlay()
+    {
+        if (Score > BestScore)
+        {
+            BestScore = Score;
+            BestScoreText.text = "Best score: " + BestScore;
+        }
+        BestScoreTextGameObject.SetActive(true);
+        Score = 0;
+
+        MainMenuCanvas.SetActive(true);
+        GamePlayCanvas.SetActive(false);
+        PlayerCube.StopPlay();
+        backroundMusic.Stop();
+
+        diceManager.ResetAll();
+
+        // удаляем старые платформы
+        while (platforms.Count > 0)
+        {
+            Destroy(platforms[0].GetObject());
+            platforms.RemoveAt(0);
+        }
+
+        platformX = -20f;
+
+        // Создаем начальные платформы
+        for (var i = 0; i < 9; i++)
+        {
+            var newPlatform = AddNextPlatform();
+            if (i <= 3)
+            {
+                newPlatform.GetObject().SetActive(false);
+            }
+        }
+    }
+
     IEnumerator PlayBackgroundMusic()
     {
         yield return new WaitForSeconds(0.95f);
         backroundMusic.Play();
+    }
+
+    public void ToggleSound()
+    {
+        
     }
 
     private void OnLandHandler(Quaternion newRotation) {
@@ -283,6 +340,6 @@ public class GameManager : MonoBehaviour
     }
 
     private void GameOver() {
-        Debug.Log("GAME OVER");
+       EndPlay();
     }
 }

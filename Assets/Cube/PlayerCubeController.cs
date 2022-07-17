@@ -4,6 +4,7 @@ using UnityEngine;
 
 enum Status
 {
+    WAIT,
     START,
     FLY,
     STAY
@@ -42,7 +43,7 @@ public class PlayerCubeController : MonoBehaviour
     float quadrA;
     float lastedTime = 0f;
     float lastedRotationTime = 0f;
-    Status currentStatus = Status.START;
+    Status currentStatus = Status.WAIT;
     ActionDirection nextAction = ActionDirection.NONE;
     bool middleAirChangedAction = false;
 
@@ -60,6 +61,29 @@ public class PlayerCubeController : MonoBehaviour
 
         speed = startSpeed;
         lastRotation = cubeTransform.rotation;
+    }
+
+    public void StartPlay()
+    {
+        currentStatus = Status.START;
+    }
+
+    public void StopPlay()
+    {
+        transform.position = Vector3.zero;
+        lastPos = Vector3.zero;
+        nextPos = Vector3.zero;
+        cubeTransform.rotation = Quaternion.Euler(0, 0, 0);
+        lastRotation = Quaternion.Euler(0, 0, 0);
+        newRotation = Quaternion.Euler(0, 0, 0);
+        nextAction = ActionDirection.NONE;
+        nextJumpLong = false;
+        middleAirChangedAction = false;
+        isLandedNow = false;
+        canAction = true;
+        StatusController.resetAllStatuses();
+
+        currentStatus = Status.WAIT;
     }
 
     void Update()

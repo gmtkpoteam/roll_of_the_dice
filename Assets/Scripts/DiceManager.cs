@@ -12,7 +12,14 @@ public class DiceManager
         InitEdges();
     }
 
-    
+    public void ResetAll()
+    {
+        shield = 0;
+        invulnerabilitySteps = 0;
+        loseControlSteps = 0;
+        InitEdges();
+    }
+
     // TODO надо связать Edges с соответствующими монобехами
     public Dictionary<DiceEdgeType, DiceEdge> InitEdges() {
         Edges.Clear();
