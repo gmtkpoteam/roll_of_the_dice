@@ -128,6 +128,8 @@ public class GameManager : MonoBehaviour
             case PlatformType.LoseControl:
                 break;
             case PlatformType.JumpOnHit:
+                PlayerCube.setNextJumpLong();
+                AddNextPlatform(); // пропускаем следующий блок
                 break;
             case PlatformType.RestoreEdge:
                 break;
@@ -144,7 +146,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private BasePlatform GetCurrentPlatform() { return platforms[2];  }
+    private BasePlatform GetCurrentPlatform() { return platforms[2]; }
 
     private BasePlatform AddNextPlatform() {
         var newPlatformObject = Instantiate(platformObject, new Vector3(platformX, -0.5f, 0f), Quaternion.identity);
@@ -153,7 +155,7 @@ public class GameManager : MonoBehaviour
         platforms.Add(platform);
         platformX += 5f;
 
-        if (platforms.Count >= 9) {
+        while (platforms.Count >= 9) {
             Destroy(platforms[0].GetObject());
             platforms.RemoveAt(0);
         }
