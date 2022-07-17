@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 enum Status
 {
@@ -28,12 +27,7 @@ public class PlayerCubeController : MonoBehaviour
     [SerializeField] float stayTime = 0.2f;
     [SerializeField] GameObject Cube;
 
-    // UI Group
-    [SerializeField] private GameObject[] CubeFacesStatuses;
-    private List<Image> CubeFacesStatusesBacks;
-    private Color colorActive = Color.green;
-    private Color colorInactive = Color.black;
-    private Color colorDisabled = Color.red;
+    UIStatuses StatusController;
 
     Vector3 lastPos = Vector3.zero;
     Vector3 nextPos = Vector3.zero;
@@ -57,29 +51,49 @@ public class PlayerCubeController : MonoBehaviour
     void Start()
     {
         cubeTransform = Cube.GetComponent<Transform>();
+        StatusController = GameObject.Find("GameManager").GetComponent<UIStatuses>();
 
         speed = startSpeed;
         lastRotation = cubeTransform.rotation;
-
-/*        for (var i = 0; i < CubeFacesStatuses.Length; i++)
-        {
-            CubeFacesStatusesBacks.Add(CubeFacesStatuses[i].GetComponent<Image>());
-        }*/
-        
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) nextAction = ActionDirection.ONE;
-        if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) nextAction = ActionDirection.TWO;
-        if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3)) nextAction = ActionDirection.THREE;
-        if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4)) nextAction = ActionDirection.FOUR;
-        if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Keypad5)) nextAction = ActionDirection.FIVE;
-        if (Input.GetKeyDown(KeyCode.Alpha6) || Input.GetKeyDown(KeyCode.Keypad6)) nextAction = ActionDirection.SIX;
+        if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            nextAction = ActionDirection.ONE;
+            StatusController.setActiveFace(1);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            nextAction = ActionDirection.TWO;
+            StatusController.setActiveFace(2);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
+        {
+            nextAction = ActionDirection.THREE;
+            StatusController.setActiveFace(3);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))
+        {
+            nextAction = ActionDirection.FOUR;
+            StatusController.setActiveFace(4);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Keypad5))
+        {
+            nextAction = ActionDirection.FIVE;
+            StatusController.setActiveFace(5);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha6) || Input.GetKeyDown(KeyCode.Keypad6))
+        {
+            nextAction = ActionDirection.SIX;
+            StatusController.setActiveFace(6);
+        }
 
         switch (currentStatus)
         {
             case Status.START:
+                nextPos = nextPos + Vector3.right * 5;
                 countQuadrAttr(height);
                 newRotation = Quaternion.AngleAxis(180f, Vector3.forward); // значения влияют на направление поворота
                 currentStatus = Status.FLY;
@@ -95,6 +109,7 @@ public class PlayerCubeController : MonoBehaviour
                     lastedTime = 0f;
                     transform.position = nextPos;
                     currentStatus = Status.STAY;
+                    StatusController.resetActiveFace();
                     isLandedNow = true;
                 }
                 break;
