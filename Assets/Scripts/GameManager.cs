@@ -133,11 +133,11 @@ public class GameManager : MonoBehaviour
         if (!diceManager.IsLoseControl()) RemoveLoseControl();
 
         if (diceManager.IsInvulnerability()) {
-            StatusText.SetText("неу€звимый");
+            StatusText.SetText("invulnerable");
         } else if (diceManager.IsLoseControl()) {
-            StatusText.SetText("потер€ контрол€");
+            StatusText.SetText("lost control");
         } else if (diceManager.OnShield()) {
-            StatusText.SetText("защита щитом");
+            StatusText.SetText("protected");
         } else {
             StatusText.SetText("");
         }
