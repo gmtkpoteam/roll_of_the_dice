@@ -42,6 +42,7 @@ public class BasePlatform {
         Controller = PlatformObject.GetComponent<PlatformController>();
 
         Controller.SetText(text + (int)edgeType, positive ? Color.green : Color.red);
+        Controller.SetPlatformColor(positive ? "green" : "red");
     }
 
     public bool CanAction(DiceEdge edge) {

@@ -392,8 +392,8 @@ MonoBehaviour:
   startSpeed: 10
   height: 3
   stayTime: 0.2
-  Cube: {fileID: 0}
-  CubeFacesStatuses: []
+  Cube: {fileID: 3868605344236411931}
+  canAction: 1
 --- !u!1 &3868605344236411931
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,7 +441,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3868605344236411931}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -5887585710403783991, guid: b1628ad363d720f458ebfee927536ffe, type: 3}
 --- !u!23 &2385783075891536881
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -462,7 +462,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 6f2ac3718db48134a94c2c42ed21f818, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
