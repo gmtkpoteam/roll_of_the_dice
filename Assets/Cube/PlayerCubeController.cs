@@ -7,7 +7,8 @@ enum Status
     WAIT,
     START,
     FLY,
-    STAY
+    STAY,
+    DEATH
 }
 
 public enum ActionDirection
@@ -260,6 +261,11 @@ public class PlayerCubeController : MonoBehaviour
                     currentStatus = Status.FLY;
                 }
                 break;
+            case Status.DEATH:
+                lastedTime += Time.deltaTime;
+                transform.position = Vector3.Lerp(lastPos, nextPos, lastedTime * speed / 10);
+                //cubeTransform.rotation = Quaternion.LerpUnclamped(lastRotation, newRotation, lastedTime * speed / 10);
+                break;
         }
         
     }
@@ -284,5 +290,15 @@ public class PlayerCubeController : MonoBehaviour
     public void setNextAction(ActionDirection direction)
     {
         nextAction = direction;
+    }
+
+    public void setDeath()
+    {
+        lastedTime = 0;
+        lastPos = transform.position;
+        nextPos = new Vector3(lastPos.x, lastPos.y + 10f, lastPos.z);
+        lastRotation = cubeTransform.rotation;
+        newRotation = new Quaternion(0, 9999f, 0, 1f) * lastRotation;
+        currentStatus = Status.DEATH;
     }
 }

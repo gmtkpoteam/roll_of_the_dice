@@ -65,11 +65,13 @@ public class GameManager : MonoBehaviour
         GamePlayCanvas.SetActive(true);
         PlayerCube.StartPlay();
 
-        StartCoroutine(PlayBackgroundMusic()); // перенести в старт игры.
+        StartCoroutine(PlayBackgroundMusic());
     }
 
-    void EndPlay()
+    IEnumerator EndPlay()
     {
+        yield return new WaitForSeconds(2f);
+
         if (Score > BestScore)
         {
             BestScore = Score;
@@ -358,6 +360,7 @@ public class GameManager : MonoBehaviour
     }
 
     private void GameOver() {
-       EndPlay();
+        PlayerCube.setDeath();
+        StartCoroutine(EndPlay());
     }
 }

@@ -92,13 +92,6 @@ public class PlatformController : MonoBehaviour
         randShakeY = Random.Range(0f, 1f);
         randShakeSpeedX = Random.Range(-10f, 10f);
         randShakeSpeedY = Random.Range(-10f, 10f);
-        StopShake();
-    }
-
-    IEnumerable StopShake()
-    {
-        yield return new WaitForSeconds(1f);
-        shake = false;
     }
 
     // Update is called once per frame
