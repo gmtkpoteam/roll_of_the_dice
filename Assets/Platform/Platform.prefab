@@ -286,6 +286,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 143344095924333062}
   description: {fileID: 154515409628074411}
+  redMaterial: {fileID: 0}
+  greenMaterial: {fileID: 0}
 --- !u!1 &6291258026086221459
 GameObject:
   m_ObjectHideFlags: 0
@@ -396,8 +398,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -459,5 +461,3 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 5263250601933439077}
   m_maskType: 0
-  redMaterial: {fileID: 2100000, guid: 5541b7f109461ac40a870b3870e82041, type: 2}
-  greenMaterial: {fileID: 2100000, guid: e011ca018e1a32848b75def0de36672d, type: 2}
