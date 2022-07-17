@@ -44,6 +44,17 @@ public class BasePlatform {
         Controller.SetText(text + (int)edgeType, positive ? Color.green : Color.red);
     }
 
+    public bool CanAction(DiceEdge edge) {
+        switch (Trigger) {
+            case PlatformTrigger.OnHit: return true;
+            case PlatformTrigger.OnHitWithEdge: return edge.GetDiceEdgeType() == EdgeType;
+            case PlatformTrigger.OnHitWithEdgeAlt: return edge.GetDiceEdgeType() != EdgeType;
+            case PlatformTrigger.OnSkip: return true;
+        }
+
+        return false;
+    }
+
     public GameObject GetObject() { return PlatformObject; }
     public bool IsPositive() { return Positive; }
     public PlatformType GetPlatformType() { return Type; }
@@ -64,12 +75,10 @@ public class PlatformInvulnerability : BasePlatform {
 
 public class PlatformScoreOnHit : BasePlatform {
     public PlatformScoreOnHit(GameObject platformObject, DiceEdgeType edgeType) : base(platformObject, PlatformType.ScoreOnHit, "SH", true, PlatformTrigger.OnHitWithEdge, edgeType) { }
-    public int Score { get { return 111; } }
 }
 
 public class PlatformScoreOnSkip : BasePlatform {
     public PlatformScoreOnSkip(GameObject platformObject) : base(platformObject, PlatformType.ScoreOnSkip, "SS", true, PlatformTrigger.OnSkip) { }
-    public int Score { get { return 1111; } }
 }
 
 public class PlatformBreaksEdgeOnHit : BasePlatform {

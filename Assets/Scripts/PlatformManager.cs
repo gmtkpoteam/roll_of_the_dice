@@ -39,7 +39,7 @@ public class PlatformManager
         var filteredEdgeTypes = new List<DiceEdgeType>();
 
         foreach (var edge in edges) {
-            if (withoutBroken && edge.Value.Broken) continue;
+            if (withoutBroken && edge.Value.broken) continue;
             if (withoutBlocked && edge.Value.IsBlocked()) continue;
 
             filteredEdgeTypes.Add(edge.Key);

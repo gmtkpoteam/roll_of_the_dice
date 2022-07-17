@@ -5,6 +5,7 @@ public class DiceManager
 {
     private readonly Dictionary<DiceEdgeType, DiceEdge> Edges = new Dictionary<DiceEdgeType, DiceEdge>();
     private int shield = 0;
+    private int invulnerabilitySteps = 0;
 
     public DiceManager() {
         InitEdges();
@@ -32,7 +33,21 @@ public class DiceManager
 
     public bool OnShield() { return shield > 0; }
     public int GetShield() { return shield; }
-    public void AddShield() { ++shield; }
-    public void RemoveShield() { shield = shield > 0 ? shield - 1 : 0; }
+    public void AddShield() { shield = 1; }
+    public bool RemoveShield() {
+        if (shield == 0) return false;
+
+        shield = 0;
+        return true;
+    }
+    public bool IsInvulnerability() { return invulnerabilitySteps > 0; }
+    public void DecreaseInvulnerability() { invulnerabilitySteps = invulnerabilitySteps > 0 ? invulnerabilitySteps - 1 : 0; }
+    public void AddInvulnerability() { invulnerabilitySteps = 3; }
+
+    public void DecreaseBlocked() {
+        foreach (var edge in Edges) {
+            edge.Value.DecreaseBlocked();
+        }
+    }
 
 }

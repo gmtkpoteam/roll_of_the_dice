@@ -15,13 +15,15 @@ public enum DiceEdgeType {
 public class DiceEdge
 {
     private DiceEdgeType Type;
-    public bool Broken = false;
-    public int BlockedSteps = 0;
+    public bool broken = false;
+    public int blockedSteps = 0;
 
     public DiceEdge(DiceEdgeType type) {
         Type = type;
     }
     
     public DiceEdgeType GetDiceEdgeType() { return Type; }
-    public bool IsBlocked() { return BlockedSteps > 0; }
+    public bool IsBlocked() { return blockedSteps > 0; }
+
+    public void DecreaseBlocked() { blockedSteps = blockedSteps > 0 ? blockedSteps - 1 : 0; }
 }

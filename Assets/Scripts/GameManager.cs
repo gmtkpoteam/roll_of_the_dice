@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     private float platformX = -20f;
     private List<BasePlatform> platforms = new List<BasePlatform>();
     private PlatformManager platformManager = new PlatformManager();
+    private BasePlatform skippedPlatform = null;
+    private bool isSetSkippedPlatform = false;
 
     [SerializeField]
     private GameObject ScoreTextGameObject;
@@ -37,12 +39,20 @@ public class GameManager : MonoBehaviour
     }
 
     private void OnLandHandler(Quaternion newRotation) {
+        PlayerCube.canAction = true;
+
         var edge = GetEdge(newRotation);
+        var platform = GetCurrentPlatform();
 
         AddNextPlatform();
-        //Debug.Log(GetCurrentPlatform().GetObject().transform.position.x.ToString());
-        InitPlatformAction();
+        InitPlatformAction(skippedPlatform, edge, true);
+        InitPlatformAction(platform, edge);
+        InitEdgeAction(edge);
+
+
         AddScore(5);
+        diceManager.DecreaseInvulnerability();
+        diceManager.DecreaseBlocked();
     }
 
     private DiceEdge GetEdge(Quaternion rotation) {
@@ -113,37 +123,97 @@ public class GameManager : MonoBehaviour
         return default;
     }
 
-    private void InitPlatformAction() {
-        var platform = GetCurrentPlatform();
+    private void InitEdgeAction(DiceEdge edge) {
+        if (edge.IsBlocked()) return;
+
+        switch (edge.GetDiceEdgeType()) {
+            case DiceEdgeType.Base:
+                break;
+            case DiceEdgeType.Double:
+                break;
+            case DiceEdgeType.Jump:
+                if (isSetSkippedPlatform) return;
+
+                InitJumpLong();
+                break;
+            case DiceEdgeType.Time:
+                break;
+            case DiceEdgeType.Shield:
+                diceManager.AddShield();
+                break;
+            case DiceEdgeType.Score:
+                AddScore(10);
+                break;
+        }
+    }
+
+    private void InitPlatformAction(BasePlatform platform, DiceEdge edge, bool onSkip = false) {
+
+        if (platform == null) return;
+
+        if (onSkip) {
+            skippedPlatform = null;
+            isSetSkippedPlatform = false;
+        }
+
+        if (onSkip && platform.GetTrigger() != PlatformTrigger.OnSkip) return;
+        if (!onSkip && platform.GetTrigger() == PlatformTrigger.OnSkip) return;
+        if (!platform.CanAction(edge)) return;
+        if (!platform.IsPositive() && diceManager.IsInvulnerability()) return;
 
         switch (platform.GetPlatformType()) {
             case PlatformType.Block:
+                edge.blockedSteps = 3;
                 break;
             case PlatformType.TurnLimit:
                 break;
             case PlatformType.BreaksEdgeOnSkip:
+                if (!diceManager.RemoveShield()) {
+                    if (edge.broken) {
+                        GameOver();
+                    } else {
+                        edge.broken = true;
+                    }
+                }
                 break;
             case PlatformType.BreaksEdgeOnHit:
+                if (!diceManager.RemoveShield()) {
+                    if (edge.broken) {
+                        GameOver();
+                    } else {
+                        edge.broken = true;
+                    }
+                }
                 break;
             case PlatformType.LoseControl:
+                PlayerCube.canAction = false;
                 break;
             case PlatformType.JumpOnHit:
-                PlayerCube.setNextJumpLong();
-                AddNextPlatform(); // пропускаем следующий блок
+                InitJumpLong();
                 break;
             case PlatformType.RestoreEdge:
+                edge.broken = false;
                 break;
             case PlatformType.ScoreOnHit:
-                PlatformScoreOnHit pl = platform as PlatformScoreOnHit;
-                AddScore(pl.Score);
+                AddScore(100);
                 break;
             case PlatformType.ScoreOnSkip:
+                AddScore(1000);
                 break;
             case PlatformType.Shield:
+                diceManager.AddShield();
                 break;
             case PlatformType.Invulnerability:
+                diceManager.AddInvulnerability();
                 break;
         }
+    }
+
+    private void InitJumpLong() {
+        PlayerCube.setNextJumpLong();
+        skippedPlatform = GetCurrentPlatform();
+        isSetSkippedPlatform = true;
+        AddNextPlatform(); // пропускаем следующий блок
     }
 
     private BasePlatform GetCurrentPlatform() { return platforms[2]; }
@@ -166,5 +236,9 @@ public class GameManager : MonoBehaviour
     private void AddScore(int value) {
         Score += value;
         ScoreText.SetText(Score.ToString());
+    }
+
+    private void GameOver() {
+        Debug.Log("GAME OVER");
     }
 }

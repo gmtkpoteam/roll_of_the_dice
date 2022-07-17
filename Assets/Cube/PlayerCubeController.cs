@@ -53,6 +53,8 @@ public class PlayerCubeController : MonoBehaviour
     public delegate void OnLand(Quaternion newRotation);
     public event OnLand onLand;
 
+    public bool canAction = true;
+
 
     void Start()
     {
@@ -76,6 +78,8 @@ public class PlayerCubeController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4)) nextAction = ActionDirection.FOUR;
         if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Keypad5)) nextAction = ActionDirection.FIVE;
         if (Input.GetKeyDown(KeyCode.Alpha6) || Input.GetKeyDown(KeyCode.Keypad6)) nextAction = ActionDirection.SIX;
+
+        if (!canAction) nextAction = ActionDirection.NONE;
 
         switch (currentStatus)
         {
