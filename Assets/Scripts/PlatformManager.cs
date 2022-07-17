@@ -15,15 +15,12 @@ public class PlatformManager
 
         switch (platformType) {
             case PlatformType.Empty:            return new PlatformEmpty(platformObject);
-            case PlatformType.BreaksEdgeOnSkip: return new PlatformBreaksEdgeOnSkip(platformObject);
             case PlatformType.BreaksEdgeOnHit:  return new PlatformBreaksEdgeOnHit(platformObject, edgeType);
             case PlatformType.BreaksRandomEdge: return new PlatformBreaksRandomEdge(platformObject);
             case PlatformType.LoseControl:      return new PlatformLoseControl(platformObject, edgeType);
             case PlatformType.JumpOnHit:        return new PlatformJumpOnHit(platformObject, edgeType);
             case PlatformType.RestoreEdge:      return new PlatformRestoreEdge(platformObject);
             case PlatformType.ScoreOnHit:       return new PlatformScoreOnHit(platformObject, edgeType);
-            case PlatformType.ScoreOnSkip:      return new PlatformScoreOnSkip(platformObject);
-            case PlatformType.Shield:           return new PlatformShield(platformObject, edgeType);
             case PlatformType.Invulnerability:  return new PlatformInvulnerability(platformObject, edgeType);
             default: return default;
         }

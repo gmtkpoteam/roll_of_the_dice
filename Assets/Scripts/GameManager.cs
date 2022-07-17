@@ -179,15 +179,6 @@ public class GameManager : MonoBehaviour
         switch (platform.GetPlatformType()) {
             case PlatformType.Empty:
                 break;
-            case PlatformType.BreaksEdgeOnSkip:
-                if (!diceManager.RemoveShield()) {
-                    if (edge.broken) {
-                        GameOver();
-                    } else {
-                        BreakEdge(edge);
-                    }
-                }
-                break;
             case PlatformType.BreaksEdgeOnHit:
                 if (!diceManager.RemoveShield()) {
                     if (edge.broken) {
@@ -199,7 +190,11 @@ public class GameManager : MonoBehaviour
                 break;
             case PlatformType.BreaksRandomEdge:
                 var randomEdge = diceManager.GetRandomEdge(false);
-                BreakEdge(randomEdge);
+                if (randomEdge == default) {
+                    GameOver();
+                } else {
+                    BreakEdge(randomEdge);
+                }
                 break;
             case PlatformType.LoseControl:
                 InitLoseControl();
@@ -211,13 +206,7 @@ public class GameManager : MonoBehaviour
                 RestoreEdge(edge);
                 break;
             case PlatformType.ScoreOnHit:
-                AddScore(100);
-                break;
-            case PlatformType.ScoreOnSkip:
-                AddScore(1000);
-                break;
-            case PlatformType.Shield:
-                diceManager.AddShield();
+                AddScore(25);
                 break;
             case PlatformType.Invulnerability:
                 diceManager.AddInvulnerability();

@@ -44,8 +44,6 @@ public class DiceManager
     }
 
     public DiceEdge GetRandomEdge(bool withBroken = true) {
-        //(DiceEdgeType)Random.Range(1, System.Enum.GetNames(typeof(DiceEdgeType)).Length - 1);
-
         var filteredEdges = new Dictionary<int, DiceEdge>();
         var i = 0;
         foreach (var edge in Edges) {
@@ -61,7 +59,7 @@ public class DiceManager
             }
         }
 
-        return filteredEdges[Random.Range(0, filteredEdges.Count - 1)];
+        return filteredEdges.Count > 0 ? filteredEdges[Random.Range(0, filteredEdges.Count - 1)] : default;
     }
 
     public bool OnShield() { return shield > 0; }

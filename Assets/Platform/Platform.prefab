@@ -288,6 +288,12 @@ MonoBehaviour:
   description: {fileID: 154515409628074411}
   redMaterial: {fileID: 2100000, guid: 5541b7f109461ac40a870b3870e82041, type: 2}
   greenMaterial: {fileID: 2100000, guid: e011ca018e1a32848b75def0de36672d, type: 2}
+  blackMaterial: {fileID: 2100000, guid: f38547fe46342244f850a774884e4977, type: 2}
+  grayMaterial: {fileID: 2100000, guid: 01b67c80e75412348b91283757f8cc2f, type: 2}
+  purpleMaterial: {fileID: 2100000, guid: 23f02da0de75548439abbfabcc339a16, type: 2}
+  YellowMaterial: {fileID: 2100000, guid: 785a52a94a93a5748a7a51327f16afeb, type: 2}
+  OrangeMaterial: {fileID: 2100000, guid: d1cc0db553979664f9dab85bfe754d4b, type: 2}
+  BlueMaterial: {fileID: 2100000, guid: bc6994a168fe6344b864f562ce6f6d31, type: 2}
 --- !u!1 &6291258026086221459
 GameObject:
   m_ObjectHideFlags: 0

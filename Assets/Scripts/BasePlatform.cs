@@ -2,7 +2,6 @@ using UnityEngine;
 
 public enum PlatformType {
     // Негативные
-    BreaksEdgeOnSkip, // Ломает грань, если перепрыгнул
     BreaksEdgeOnHit,  // Ломает грань, если попал не нужной гранью
     BreaksRandomEdge, // Ломает случайную грань
     LoseControl,      // Теряется управление на N ходов
@@ -11,8 +10,6 @@ public enum PlatformType {
     JumpOnHit,        // Перепрыгивает следующую платформу, если попал нужной гранью
     RestoreEdge,      // Восстанавлливает грань, если попал сломанной гранью
     ScoreOnHit,       // Дает больше очков, если попал нужной гранью
-    ScoreOnSkip,      // Дает больше очков, если перепрыгнул
-    Shield,           // Дает щит, если попал нужной гранью
     Invulnerability,  // Дает сопротивление всем негативным эффектам на N ходов
     Empty,            // Без действий
 
@@ -42,8 +39,8 @@ public class BasePlatform {
 
         Controller = PlatformObject.GetComponent<PlatformController>();
 
-        Controller.SetText(text + (int)edgeType, positive ? Color.green : Color.red);
-        Controller.SetPlatformColor(positive ? "green" : "red");
+        Controller.SetText("" + (int)edgeType);
+        Controller.SetPlatformColor(Type);
         Controller.SetDescription(description);
     }
 
@@ -71,7 +68,7 @@ public class PlatformInvulnerability : BasePlatform {
         platformObject, 
         PlatformType.Invulnerability, 
         "IN",
-        "неуязвимость\nесли УСПЕХ",
+        "invulnerability",
         true, 
         PlatformTrigger.OnHitWithEdge, 
         edgeType
@@ -84,21 +81,10 @@ public class PlatformScoreOnHit : BasePlatform {
         platformObject, 
         PlatformType.ScoreOnHit, 
         "SH", 
-        "доп очки\nесли УСПЕХ",
+        "bonus score",
         true, 
         PlatformTrigger.OnHitWithEdge, 
         edgeType
-    ) { }
-}
-
-public class PlatformScoreOnSkip : BasePlatform {
-    public PlatformScoreOnSkip(GameObject platformObject) : base(
-        platformObject, 
-        PlatformType.ScoreOnSkip, 
-        "SS", 
-        "доп очки\nесли ПРЫЖОК",
-        true, 
-        PlatformTrigger.OnSkip
     ) { }
 }
 
@@ -107,7 +93,7 @@ public class PlatformBreaksEdgeOnHit : BasePlatform {
         platformObject, 
         PlatformType.BreaksEdgeOnHit, 
         "BH", 
-        "ломает грань\nесли ПРОВАЛ",
+        "damage",
         false, 
         PlatformTrigger.OnHitWithEdgeAlt, 
         edgeType
@@ -119,20 +105,9 @@ public class PlatformBreaksRandomEdge : BasePlatform {
         platformObject,
         PlatformType.BreaksRandomEdge,
         "BR",
-        "ломает грань\nслучайно",
+        "random damage",
         false,
         PlatformTrigger.OnHit
-    ) { }
-}
-
-public class PlatformBreaksEdgeOnSkip : BasePlatform {
-    public PlatformBreaksEdgeOnSkip(GameObject platformObject) : base(
-        platformObject, 
-        PlatformType.BreaksEdgeOnSkip, 
-        "BS", 
-        "ломает грань\nесли ПРЫЖОК",
-        false, 
-        PlatformTrigger.OnSkip
     ) { }
 }
 
@@ -141,7 +116,7 @@ public class PlatformJumpOnHit : BasePlatform {
         platformObject, 
         PlatformType.JumpOnHit, 
         "JP", 
-        "прыжок\nесли УСПЕХ",
+        "jump",
         true, 
         PlatformTrigger.OnHitWithEdge, 
         edgeType
@@ -153,7 +128,7 @@ public class PlatformLoseControl : BasePlatform {
         platformObject, 
         PlatformType.LoseControl, 
         "LC", 
-        "потеря контроля\nесли ПРОВАЛ",
+        "lose control",
         false, 
         PlatformTrigger.OnHitWithEdgeAlt, 
         edgeType
@@ -165,21 +140,9 @@ public class PlatformRestoreEdge : BasePlatform {
         platformObject, 
         PlatformType.RestoreEdge, 
         "RE", 
-        "чинит грань",
+        "restore",
         true, 
         PlatformTrigger.OnHit
-    ) { }
-}
-
-public class PlatformShield : BasePlatform {
-    public PlatformShield(GameObject platformObject, DiceEdgeType edgeType) : base(
-        platformObject, 
-        PlatformType.Shield, 
-        "SD", 
-        "щит\nесли УСПЕХ",
-        true, 
-        PlatformTrigger.OnHitWithEdge, 
-        edgeType
     ) { }
 }
 
@@ -188,7 +151,7 @@ public class PlatformEmpty : BasePlatform {
         platformObject, 
         PlatformType.Empty, 
         "EM", 
-        "ничего",
+        "empty",
         true, 
         PlatformTrigger.OnHit
     ) { }
