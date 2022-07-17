@@ -104,6 +104,8 @@ public class PlayerCubeController : MonoBehaviour
                 break;
             case Status.FLY:
                 lastedTime += Time.deltaTime;
+
+
                 
                 transform.position = getPosInQuadr(Mathf.Lerp(lastPos.x, nextPos.x, lastedTime * speed / 10));
                 cubeTransform.rotation = Quaternion.Lerp(lastRotation, newRotation, lastedTime * speed / 10);

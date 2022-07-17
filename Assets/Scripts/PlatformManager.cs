@@ -14,10 +14,10 @@ public class PlatformManager
             : (DiceEdgeType)Random.Range(1, System.Enum.GetNames(typeof(DiceEdgeType)).Length - 1);
 
         switch (platformType) {
-            case PlatformType.Block:            return new PlatformBlock(platformObject);
-            case PlatformType.TurnLimit:        return new PlatformTurnLimit(platformObject, edgeType);
+            case PlatformType.Empty:            return new PlatformEmpty(platformObject);
             case PlatformType.BreaksEdgeOnSkip: return new PlatformBreaksEdgeOnSkip(platformObject);
             case PlatformType.BreaksEdgeOnHit:  return new PlatformBreaksEdgeOnHit(platformObject, edgeType);
+            case PlatformType.BreaksRandomEdge: return new PlatformBreaksRandomEdge(platformObject);
             case PlatformType.LoseControl:      return new PlatformLoseControl(platformObject, edgeType);
             case PlatformType.JumpOnHit:        return new PlatformJumpOnHit(platformObject, edgeType);
             case PlatformType.RestoreEdge:      return new PlatformRestoreEdge(platformObject);
@@ -33,14 +33,12 @@ public class PlatformManager
         GameObject platformObject,
         Dictionary<DiceEdgeType, DiceEdge> edges, 
         PlatformType customPlatformType = default, 
-        bool withoutBroken = true, 
-        bool withoutBlocked = true
+        bool withoutBroken = true
     ) {
         var filteredEdgeTypes = new List<DiceEdgeType>();
 
         foreach (var edge in edges) {
             if (withoutBroken && edge.Value.broken) continue;
-            if (withoutBlocked && edge.Value.IsBlocked()) continue;
 
             filteredEdgeTypes.Add(edge.Key);
         }

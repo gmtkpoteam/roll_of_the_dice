@@ -2,11 +2,10 @@ using UnityEngine;
 
 public enum PlatformType {
     // Негативные
-    Block,            // Блокирует грань при попадании на N прыжков
-    TurnLimit,        // На следующем прыжке ограничивает повороты только по 2 сторонам
     BreaksEdgeOnSkip, // Ломает грань, если перепрыгнул
     BreaksEdgeOnHit,  // Ломает грань, если попал не нужной гранью
-    LoseControl,      // На следующем прыжке игрок теряет управление, кубик крутится рандомно
+    BreaksRandomEdge, // Ломает случайную грань
+    LoseControl,      // Теряется управление на N ходов
 
     //Позитивные
     JumpOnHit,        // Перепрыгивает следующую платформу, если попал нужной гранью
@@ -14,7 +13,9 @@ public enum PlatformType {
     ScoreOnHit,       // Дает больше очков, если попал нужной гранью
     ScoreOnSkip,      // Дает больше очков, если перепрыгнул
     Shield,           // Дает щит, если попал нужной гранью
-    Invulnerability   // Дает сопротивление всем негативным эффектам на N ходов
+    Invulnerability,  // Дает сопротивление всем негативным эффектам на N ходов
+    Empty,            // Без действий
+
 }
 
 public enum PlatformTrigger {
@@ -32,7 +33,7 @@ public class BasePlatform {
     private PlatformTrigger Trigger;
     private PlatformController Controller;
 
-    public BasePlatform(GameObject platformObject, PlatformType type, string text, bool positive, PlatformTrigger trigger, DiceEdgeType edgeType = DiceEdgeType.Empty) {
+    public BasePlatform(GameObject platformObject, PlatformType type, string text, string description, bool positive, PlatformTrigger trigger, DiceEdgeType edgeType = DiceEdgeType.Empty) {
         PlatformObject = platformObject;
         Type = type;
         EdgeType = edgeType;
@@ -41,7 +42,9 @@ public class BasePlatform {
 
         Controller = PlatformObject.GetComponent<PlatformController>();
 
-        Controller.SetText(text + (int)edgeType, positive ? Color.green : Color.red);
+
+        Controller.SetText(text + ((int)edgeType == 0 ? "" : (int)edgeType), positive ? Color.green : Color.red);
+        Controller.SetDescription(description);
     }
 
     public bool CanAction(DiceEdge edge) {
@@ -63,49 +66,131 @@ public class BasePlatform {
 
 }
 
-public class PlatformBlock : BasePlatform {
-    public PlatformBlock(GameObject platformObject) : base(platformObject, PlatformType.Block, "BL", false, PlatformTrigger.OnHit) { }
-    public int Steps { get { return 3; } }
-}
-
 public class PlatformInvulnerability : BasePlatform {
-    public PlatformInvulnerability(GameObject platformObject, DiceEdgeType edgeType) : base(platformObject, PlatformType.Invulnerability, "IN", true, PlatformTrigger.OnHitWithEdge, edgeType) { }
+    public PlatformInvulnerability(GameObject platformObject, DiceEdgeType edgeType) : base(
+        platformObject, 
+        PlatformType.Invulnerability, 
+        "IN",
+        "неуязвимость\nесли УСПЕХ",
+        true, 
+        PlatformTrigger.OnHitWithEdge, 
+        edgeType
+    ) { }
     public int Steps { get { return 3; } }
 }
 
 public class PlatformScoreOnHit : BasePlatform {
-    public PlatformScoreOnHit(GameObject platformObject, DiceEdgeType edgeType) : base(platformObject, PlatformType.ScoreOnHit, "SH", true, PlatformTrigger.OnHitWithEdge, edgeType) { }
+    public PlatformScoreOnHit(GameObject platformObject, DiceEdgeType edgeType) : base(
+        platformObject, 
+        PlatformType.ScoreOnHit, 
+        "SH", 
+        "доп очки\nесли УСПЕХ",
+        true, 
+        PlatformTrigger.OnHitWithEdge, 
+        edgeType
+    ) { }
 }
 
 public class PlatformScoreOnSkip : BasePlatform {
-    public PlatformScoreOnSkip(GameObject platformObject) : base(platformObject, PlatformType.ScoreOnSkip, "SS", true, PlatformTrigger.OnSkip) { }
+    public PlatformScoreOnSkip(GameObject platformObject) : base(
+        platformObject, 
+        PlatformType.ScoreOnSkip, 
+        "SS", 
+        "доп очки\nесли ПРЫЖОК",
+        true, 
+        PlatformTrigger.OnSkip
+    ) { }
 }
 
 public class PlatformBreaksEdgeOnHit : BasePlatform {
-    public PlatformBreaksEdgeOnHit(GameObject platformObject, DiceEdgeType edgeType) : base(platformObject, PlatformType.BreaksEdgeOnHit, "BH", false, PlatformTrigger.OnHitWithEdgeAlt, edgeType) { }
+    public PlatformBreaksEdgeOnHit(GameObject platformObject, DiceEdgeType edgeType) : base(
+        platformObject, 
+        PlatformType.BreaksEdgeOnHit, 
+        "BH", 
+        "ломает грань\nесли ПРОВАЛ",
+        false, 
+        PlatformTrigger.OnHitWithEdgeAlt, 
+        edgeType
+    ) { }
+}
+
+public class PlatformBreaksRandomEdge : BasePlatform {
+    public PlatformBreaksRandomEdge(GameObject platformObject) : base(
+        platformObject,
+        PlatformType.BreaksRandomEdge,
+        "BR",
+        "ломает грань\nслучайно",
+        false,
+        PlatformTrigger.OnHit
+    ) { }
 }
 
 public class PlatformBreaksEdgeOnSkip : BasePlatform {
-    public PlatformBreaksEdgeOnSkip(GameObject platformObject) : base(platformObject, PlatformType.BreaksEdgeOnSkip, "BS", false, PlatformTrigger.OnSkip) { }
+    public PlatformBreaksEdgeOnSkip(GameObject platformObject) : base(
+        platformObject, 
+        PlatformType.BreaksEdgeOnSkip, 
+        "BS", 
+        "ломает грань\nесли ПРЫЖОК",
+        false, 
+        PlatformTrigger.OnSkip
+    ) { }
 }
 
 public class PlatformJumpOnHit : BasePlatform {
-    public PlatformJumpOnHit(GameObject platformObject, DiceEdgeType edgeType) : base(platformObject, PlatformType.JumpOnHit, "JP", true, PlatformTrigger.OnHitWithEdge, edgeType) { }
+    public PlatformJumpOnHit(GameObject platformObject, DiceEdgeType edgeType) : base(
+        platformObject, 
+        PlatformType.JumpOnHit, 
+        "JP", 
+        "прыжок\nесли УСПЕХ",
+        true, 
+        PlatformTrigger.OnHitWithEdge, 
+        edgeType
+    ) { }
 }
 
 public class PlatformLoseControl : BasePlatform {
-    public PlatformLoseControl(GameObject platformObject, DiceEdgeType edgeType) : base(platformObject, PlatformType.LoseControl, "LC", false, PlatformTrigger.OnHitWithEdgeAlt, edgeType) { }
+    public PlatformLoseControl(GameObject platformObject, DiceEdgeType edgeType) : base(
+        platformObject, 
+        PlatformType.LoseControl, 
+        "LC", 
+        "потеря контроля\nесли ПРОВАЛ",
+        false, 
+        PlatformTrigger.OnHitWithEdgeAlt, 
+        edgeType
+    ) { }
 }
 
 public class PlatformRestoreEdge : BasePlatform {
-    public PlatformRestoreEdge(GameObject platformObject) : base(platformObject, PlatformType.RestoreEdge, "RE", true, PlatformTrigger.OnHit) { }
+    public PlatformRestoreEdge(GameObject platformObject) : base(
+        platformObject, 
+        PlatformType.RestoreEdge, 
+        "RE", 
+        "чинит грань",
+        true, 
+        PlatformTrigger.OnHit
+    ) { }
 }
 
 public class PlatformShield : BasePlatform {
-    public PlatformShield(GameObject platformObject, DiceEdgeType edgeType) : base(platformObject, PlatformType.Shield, "SD", true, PlatformTrigger.OnHitWithEdge, edgeType) { }
+    public PlatformShield(GameObject platformObject, DiceEdgeType edgeType) : base(
+        platformObject, 
+        PlatformType.Shield, 
+        "SD", 
+        "щит\nесли УСПЕХ",
+        true, 
+        PlatformTrigger.OnHitWithEdge, 
+        edgeType
+    ) { }
 }
 
-public class PlatformTurnLimit : BasePlatform {
-    public PlatformTurnLimit(GameObject platformObject, DiceEdgeType edgeType) : base(platformObject, PlatformType.TurnLimit, "TL", false, PlatformTrigger.OnHitWithEdgeAlt, edgeType) { }
+public class PlatformEmpty : BasePlatform {
+    public PlatformEmpty(GameObject platformObject) : base(
+        platformObject, 
+        PlatformType.Empty, 
+        "EM", 
+        "ничего",
+        true, 
+        PlatformTrigger.OnHit
+    ) { }
 }
 

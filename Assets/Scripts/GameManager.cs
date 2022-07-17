@@ -21,25 +21,35 @@ public class GameManager : MonoBehaviour
     private TextMeshProUGUI ScoreText;
     private int Score = 0;
 
+    [SerializeField]
+    private GameObject StatusTextGameObject;
+    private TextMeshProUGUI StatusText;
+
     private DiceManager diceManager = new DiceManager();
+
+    private UIStatuses uiStatuses;
 
     void Start()
     {
+        uiStatuses = gameObject.GetComponent<UIStatuses>();
+
         PlayerCube.onLand += OnLandHandler;
         ScoreText = ScoreTextGameObject.GetComponent<TextMeshProUGUI>();
         ScoreText.SetText(Score.ToString());
+
+        StatusText = StatusTextGameObject.GetComponent<TextMeshProUGUI>();
+
         // Создаем начальные платформы
         for (var i = 0; i < 9; i++) {
             var newPlatform = AddNextPlatform();
             if (i <= 3) {
                 newPlatform.GetObject().SetActive(false);
             }
-            
         }
     }
 
     private void OnLandHandler(Quaternion newRotation) {
-        PlayerCube.canAction = true;
+        if (!diceManager.IsLoseControl()) PlayerCube.canAction = true;
 
         var edge = GetEdge(newRotation);
         var platform = GetCurrentPlatform();
@@ -47,12 +57,30 @@ public class GameManager : MonoBehaviour
         AddNextPlatform();
         InitPlatformAction(skippedPlatform, edge, true);
         InitPlatformAction(platform, edge);
-        InitEdgeAction(edge);
-
 
         AddScore(5);
         diceManager.DecreaseInvulnerability();
-        diceManager.DecreaseBlocked();
+        diceManager.DecreaseLoseControl();
+
+        if (!diceManager.IsLoseControl()) RemoveLoseControl();
+
+        if (diceManager.IsInvulnerability()) {
+            StatusText.SetText("неуязвимый");
+        } else if (diceManager.IsLoseControl()) {
+            StatusText.SetText("потеря контроля");
+        } else if (diceManager.OnShield()) {
+            StatusText.SetText("защита щитом");
+        } else {
+            StatusText.SetText("");
+        }
+
+        CheckGameOver();
+    }
+
+    private void CheckGameOver() {
+        if (diceManager.GetAliveEdgesCount() == 0) {
+            GameOver();
+        }
     }
 
     private DiceEdge GetEdge(Quaternion rotation) {
@@ -123,30 +151,6 @@ public class GameManager : MonoBehaviour
         return default;
     }
 
-    private void InitEdgeAction(DiceEdge edge) {
-        if (edge.IsBlocked()) return;
-
-        switch (edge.GetDiceEdgeType()) {
-            case DiceEdgeType.Base:
-                break;
-            case DiceEdgeType.Double:
-                break;
-            case DiceEdgeType.Jump:
-                if (isSetSkippedPlatform) return;
-
-                InitJumpLong();
-                break;
-            case DiceEdgeType.Time:
-                break;
-            case DiceEdgeType.Shield:
-                diceManager.AddShield();
-                break;
-            case DiceEdgeType.Score:
-                AddScore(10);
-                break;
-        }
-    }
-
     private void InitPlatformAction(BasePlatform platform, DiceEdge edge, bool onSkip = false) {
 
         if (platform == null) return;
@@ -162,17 +166,14 @@ public class GameManager : MonoBehaviour
         if (!platform.IsPositive() && diceManager.IsInvulnerability()) return;
 
         switch (platform.GetPlatformType()) {
-            case PlatformType.Block:
-                edge.blockedSteps = 3;
-                break;
-            case PlatformType.TurnLimit:
+            case PlatformType.Empty:
                 break;
             case PlatformType.BreaksEdgeOnSkip:
                 if (!diceManager.RemoveShield()) {
                     if (edge.broken) {
                         GameOver();
                     } else {
-                        edge.broken = true;
+                        BreakEdge(edge);
                     }
                 }
                 break;
@@ -181,18 +182,22 @@ public class GameManager : MonoBehaviour
                     if (edge.broken) {
                         GameOver();
                     } else {
-                        edge.broken = true;
+                        BreakEdge(edge);
                     }
                 }
                 break;
+            case PlatformType.BreaksRandomEdge:
+                var randomEdge = diceManager.GetRandomEdge(false);
+                BreakEdge(randomEdge);
+                break;
             case PlatformType.LoseControl:
-                PlayerCube.canAction = false;
+                InitLoseControl();
                 break;
             case PlatformType.JumpOnHit:
                 InitJumpLong();
                 break;
             case PlatformType.RestoreEdge:
-                edge.broken = false;
+                RestoreEdge(edge);
                 break;
             case PlatformType.ScoreOnHit:
                 AddScore(100);
@@ -205,8 +210,43 @@ public class GameManager : MonoBehaviour
                 break;
             case PlatformType.Invulnerability:
                 diceManager.AddInvulnerability();
+                RemoveLoseControl();
                 break;
         }
+    }
+
+    private void BreakEdge(DiceEdge edge) {
+        edge.broken = true;
+        uiStatuses.toggleDisabledFace((int)edge.GetDiceEdgeType(), true);
+    }
+
+    private void RestoreEdge(DiceEdge edge) {
+        edge.broken = false;
+        uiStatuses.toggleDisabledFace((int)edge.GetDiceEdgeType(), false);
+    }
+
+    private void InitLoseControl() {
+        PlayerCube.canAction = false;
+        diceManager.AddLoseControl();
+
+        //uiStatuses.toggleDisabledFace(1, true);
+        //uiStatuses.toggleDisabledFace(2, true);
+        //uiStatuses.toggleDisabledFace(3, true);
+        //uiStatuses.toggleDisabledFace(4, true);
+        //uiStatuses.toggleDisabledFace(5, true);
+        //uiStatuses.toggleDisabledFace(6, true);
+    }
+
+    private void RemoveLoseControl() {
+        diceManager.ClearLoseControl();
+        PlayerCube.canAction = true;
+
+        //uiStatuses.toggleDisabledFace(1, false);
+        //uiStatuses.toggleDisabledFace(2, false);
+        //uiStatuses.toggleDisabledFace(3, false);
+        //uiStatuses.toggleDisabledFace(4, false);
+        //uiStatuses.toggleDisabledFace(5, false);
+        //uiStatuses.toggleDisabledFace(6, false);
     }
 
     private void InitJumpLong() {
@@ -216,11 +256,15 @@ public class GameManager : MonoBehaviour
         AddNextPlatform(); // пропускаем следующий блок
     }
 
-    private BasePlatform GetCurrentPlatform() { return platforms[2]; }
+    private BasePlatform GetCurrentPlatform() {
+        return platforms[4]; 
+    }
 
     private BasePlatform AddNextPlatform() {
         var newPlatformObject = Instantiate(platformObject, new Vector3(platformX, -0.5f, 0f), Quaternion.identity);
         var platform = platformManager.GetNextPlatform(newPlatformObject);
+        // Костыль, чтобы почаще были негативные платформы
+        if (platform.IsPositive()) platform = platformManager.GetNextPlatform(newPlatformObject);
 
         platforms.Add(platform);
         platformX += 5f;
