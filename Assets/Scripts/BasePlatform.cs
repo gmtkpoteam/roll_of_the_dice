@@ -41,7 +41,7 @@ public class BasePlatform {
 
         Controller = PlatformObject.GetComponent<PlatformController>();
 
-        Controller.SetText(text, positive ? Color.green : Color.red);
+        Controller.SetText(text + (int)edgeType, positive ? Color.green : Color.red);
     }
 
     public GameObject GetObject() { return PlatformObject; }

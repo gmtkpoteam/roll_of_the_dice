@@ -41,7 +41,7 @@ public class PlayerCubeController : MonoBehaviour
     ActionDirection nextAction = ActionDirection.NONE;
 
     private bool isLandedNow = false;
-    public delegate void OnLand();
+    public delegate void OnLand(Quaternion newRotation);
     public event OnLand onLand;
 
 
@@ -88,7 +88,7 @@ public class PlayerCubeController : MonoBehaviour
                 break;
             case Status.STAY:
                 if (isLandedNow) {
-                    onLand.Invoke();
+                    onLand.Invoke(newRotation);
                     isLandedNow = false;
                 }
 

@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DiceManager : MonoBehaviour
+public class DiceManager
 {
-    private readonly Dictionary<DiceEdgeType, DiceEdge> Edges;
+    private readonly Dictionary<DiceEdgeType, DiceEdge> Edges = new Dictionary<DiceEdgeType, DiceEdge>();
     private int shield = 0;
 
-    void Start()
-    {
+    public DiceManager() {
         InitEdges();
     }
 
+    
     // TODO надо связать Edges с соответствующими монобехами
     public Dictionary<DiceEdgeType, DiceEdge> InitEdges() {
         Edges.Clear();
@@ -23,6 +23,11 @@ public class DiceManager : MonoBehaviour
         Edges.Add(DiceEdgeType.Score, new DiceEdge(DiceEdgeType.Score));
 
         return Edges;
+    }
+
+    public DiceEdge GetEdge(DiceEdgeType edgeType) {
+        Edges.TryGetValue(edgeType, out var edge);
+        return edge;
     }
 
     public bool OnShield() { return shield > 0; }
