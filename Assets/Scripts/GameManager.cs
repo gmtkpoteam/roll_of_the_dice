@@ -230,7 +230,6 @@ public class GameManager : MonoBehaviour
 
         if (onSkip && platform.GetTrigger() != PlatformTrigger.OnSkip) return;
         if (!onSkip && platform.GetTrigger() == PlatformTrigger.OnSkip) return;
-        if (!platform.CanAction(edge)) return;
         if (!platform.IsPositive() && diceManager.IsInvulnerability())
         {
             platform.FallDown();
@@ -241,6 +240,10 @@ public class GameManager : MonoBehaviour
             case PlatformType.Empty:
                 break;
             case PlatformType.BreaksEdgeOnHit:
+                if (!platform.CanAction(edge)) {
+                    platform.FallDown();
+                    return;
+                }
                 if (!diceManager.RemoveShield()) {
                     platform.SomeShake();
                     if (edge.broken) {
@@ -260,6 +263,10 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             case PlatformType.LoseControl:
+                if (!platform.CanAction(edge)) {
+                    platform.FallDown();
+                    return;
+                }
                 platform.SomeShake();
                 InitLoseControl();
                 break;
