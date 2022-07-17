@@ -42,8 +42,8 @@ public class BasePlatform {
 
         Controller = PlatformObject.GetComponent<PlatformController>();
 
-
-        Controller.SetText(text + ((int)edgeType == 0 ? "" : (int)edgeType), positive ? Color.green : Color.red);
+        Controller.SetText(text + (int)edgeType, positive ? Color.green : Color.red);
+        Controller.SetPlatformColor(positive ? "green" : "red");
         Controller.SetDescription(description);
     }
 

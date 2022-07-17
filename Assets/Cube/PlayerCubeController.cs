@@ -25,6 +25,7 @@ public class PlayerCubeController : MonoBehaviour
     [SerializeField] float startSpeed = 10f;
     [SerializeField] float height = 3f;
     [SerializeField] float stayTime = 0.2f;
+    Vector3 stayScale = new Vector3(1.3f, 0.7f, 1.3f);
     [SerializeField] GameObject Cube;
 
     UIStatuses StatusController;
@@ -127,8 +128,18 @@ public class PlayerCubeController : MonoBehaviour
 
                 lastedTime += Time.deltaTime;
 
+                if (lastedTime < stayTime / 2)
+                {
+                    transform.localScale = Vector3.Lerp(Vector3.one, stayScale, lastedTime / stayTime );
+                }
+                else
+                {
+                    transform.localScale = Vector3.Lerp(stayScale, Vector3.one, lastedTime / stayTime - stayTime / 2);
+                }
+
                 if(lastedTime > stayTime)
                 {
+                    transform.localScale = Vector3.one;
                     lastPos = nextPos;
                     if (nextJumpLong)
                     {

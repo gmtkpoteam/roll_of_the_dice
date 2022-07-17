@@ -237,7 +237,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 01b67c80e75412348b91283757f8cc2f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -459,3 +459,5 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 5263250601933439077}
   m_maskType: 0
+  redMaterial: {fileID: 2100000, guid: 5541b7f109461ac40a870b3870e82041, type: 2}
+  greenMaterial: {fileID: 2100000, guid: e011ca018e1a32848b75def0de36672d, type: 2}
