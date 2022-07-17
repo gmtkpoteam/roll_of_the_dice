@@ -60,6 +60,8 @@ public class BasePlatform {
     public PlatformType GetPlatformType() { return Type; }
     public DiceEdgeType GetDiceEdgeType() { return EdgeType; }
     public PlatformTrigger GetTrigger() { return Trigger; }
+    public void FallDown() { Controller.FallDown(); }
+    public void SomeShake() { Controller.SomeShake(); }
 
 }
 

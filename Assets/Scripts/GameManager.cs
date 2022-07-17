@@ -231,13 +231,18 @@ public class GameManager : MonoBehaviour
         if (onSkip && platform.GetTrigger() != PlatformTrigger.OnSkip) return;
         if (!onSkip && platform.GetTrigger() == PlatformTrigger.OnSkip) return;
         if (!platform.CanAction(edge)) return;
-        if (!platform.IsPositive() && diceManager.IsInvulnerability()) return;
+        if (!platform.IsPositive() && diceManager.IsInvulnerability())
+        {
+            platform.FallDown();
+            return;
+        }
 
         switch (platform.GetPlatformType()) {
             case PlatformType.Empty:
                 break;
             case PlatformType.BreaksEdgeOnHit:
                 if (!diceManager.RemoveShield()) {
+                    platform.SomeShake();
                     if (edge.broken) {
                         GameOver();
                     } else {
@@ -246,6 +251,7 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             case PlatformType.BreaksRandomEdge:
+                platform.SomeShake();
                 var randomEdge = diceManager.GetRandomEdge(false);
                 if (randomEdge == default) {
                     GameOver();
@@ -254,18 +260,23 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             case PlatformType.LoseControl:
+                platform.SomeShake();
                 InitLoseControl();
                 break;
             case PlatformType.JumpOnHit:
+                platform.FallDown();
                 InitJumpLong();
                 break;
             case PlatformType.RestoreEdge:
+                platform.FallDown();
                 RestoreEdge(edge);
                 break;
             case PlatformType.ScoreOnHit:
+                platform.FallDown();
                 AddScore(25);
                 break;
             case PlatformType.Invulnerability:
+                platform.FallDown();
                 diceManager.AddInvulnerability();
                 RemoveLoseControl();
                 break;

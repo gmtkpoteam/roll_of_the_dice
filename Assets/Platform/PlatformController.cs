@@ -7,6 +7,7 @@ public class PlatformController : MonoBehaviour
 {
     [SerializeField] private TextMeshPro text;
     [SerializeField] private TextMeshPro description;
+    [SerializeField] private GameObject mesh;
     [SerializeField] private Material redMaterial;
     [SerializeField] private Material greenMaterial;
     [SerializeField] private Material blackMaterial;
@@ -15,6 +16,14 @@ public class PlatformController : MonoBehaviour
     [SerializeField] private Material YellowMaterial;
     [SerializeField] private Material OrangeMaterial;
     [SerializeField] private Material BlueMaterial;
+
+    private float baseX;
+    private float baseY;
+    private float randShakeX;
+    private float randShakeY;
+    private float randShakeSpeedX;
+    private float randShakeSpeedY;
+    private bool shake = false;
 
     public void SetText(string newText) {
         text.SetText(newText);
@@ -25,31 +34,31 @@ public class PlatformController : MonoBehaviour
     {
         switch (platformType) {
             case PlatformType.BreaksEdgeOnHit:
-                GetComponent<MeshRenderer>().material = redMaterial;
+                GetComponentInChildren<MeshRenderer>().material = redMaterial;
                 break;
             case PlatformType.BreaksRandomEdge:
-                GetComponent<MeshRenderer>().material = blackMaterial;
+                GetComponentInChildren<MeshRenderer>().material = blackMaterial;
                 text.SetText("?");
                 break;
             case PlatformType.LoseControl:
-                GetComponent<MeshRenderer>().material = purpleMaterial;
+                GetComponentInChildren<MeshRenderer>().material = purpleMaterial;
                 text.color = Color.white;
                 break;
             case PlatformType.JumpOnHit:
-                GetComponent<MeshRenderer>().material = OrangeMaterial;
+                GetComponentInChildren<MeshRenderer>().material = OrangeMaterial;
                 break;
             case PlatformType.RestoreEdge:
-                GetComponent<MeshRenderer>().material = greenMaterial;
+                GetComponentInChildren<MeshRenderer>().material = greenMaterial;
                 text.SetText("+");
                 break;
             case PlatformType.ScoreOnHit:
-                GetComponent<MeshRenderer>().material = YellowMaterial;
+                GetComponentInChildren<MeshRenderer>().material = YellowMaterial;
                 break;
             case PlatformType.Invulnerability:
-                GetComponent<MeshRenderer>().material = BlueMaterial;
+                GetComponentInChildren<MeshRenderer>().material = BlueMaterial;
                 break;
             case PlatformType.Empty:
-                GetComponent<MeshRenderer>().material = grayMaterial;
+                GetComponentInChildren<MeshRenderer>().material = grayMaterial;
                 break;
         }
 
@@ -67,14 +76,40 @@ public class PlatformController : MonoBehaviour
         description.SetText(newDescription);
     }
 
-    void Start()
+    public void FallDown()
     {
+        Rigidbody rb = GetComponentInChildren<Rigidbody>();
+        rb.useGravity = true;
+        rb.AddForce(Vector3.down * 100);
+    }
 
+    public void SomeShake()
+    {
+        shake = true;
+        baseX = transform.position.x;
+        baseY = transform.position.z;
+        randShakeX = Random.Range(0f, 1f);
+        randShakeY = Random.Range(0f, 1f);
+        randShakeSpeedX = Random.Range(-10f, 10f);
+        randShakeSpeedY = Random.Range(-10f, 10f);
+        StopShake();
+    }
+
+    IEnumerable StopShake()
+    {
+        yield return new WaitForSeconds(1f);
+        shake = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (shake)
+        {
+            mesh.transform.position = new Vector3(
+                baseX + Mathf.Sin(randShakeX + Time.time * (50 + randShakeSpeedX)) * 0.03f,
+                mesh.transform.position.y,
+                baseY + Mathf.Sin(randShakeY + Time.time * (50 + randShakeSpeedY)) * 0.03f);
+        }
     }
 }
